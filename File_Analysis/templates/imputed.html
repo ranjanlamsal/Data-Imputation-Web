@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Imputation Success</title>
+</head>
+
+<body>
+
+    <h1>Imputation Success</h1>
+    <p>File Imputed successfully: {{ file_path }}</p>
+    <p>Column Imputed: {{ selected_column }}</p>
+
+    <!-- JavaScript function to submit the form -->
+    <script>
+        function submitForm() {
+            document.getElementById('analyze_column').submit();
+        }
+    </script>
+
+    <!-- Button to analyze imputed data -->
+    <form id="analyze_column" method="post" action="{% url 'analyze_column' %}">
+        {% csrf_token %}
+        <!-- Hidden input to store the selected column -->
+        <input type="hidden" name="selected_column" value="{{ selected_column }}">
+        <input type="hidden" name="file_path" value="{{ file_path }}">
+        <button type="button" onclick="submitForm()">Analyze Data</button>
+    </form>
+
+</body>
+
+</html>

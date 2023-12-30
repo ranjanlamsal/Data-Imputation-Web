@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Analyzed Column</title>
+    <!-- Include Plotly CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <h1>Analyzed Column</h1>
+    <!-- Display other analyzed column details -->
+
+    <div>
+        <p>File Path: {{ file_path }}</p>
+        <p>Column Name: {{ selected_column }}</p>
+        <p>Total Rows: {{ total_rows }}</p>
+        <p>Total Nan Values: {{ total_nan_values }}</p>
+        <p>Nan Percentage: {{ nan_percentage }}</p>
+        <p>Mean: {{ mean }}</p>
+        <p>Median: {{ median }}</p>
+        <p>SD: {{ SD }}</p>
+    </div>
+
+    <!-- Display the histogram image
+    <img src="data:image/png;base64, {{ histogram_data }}" alt="Histogram of {{ column_name }}"> -->
+
+    <!-- Display the Plotly histogram -->
+    <div>
+        {{ histogram_data|safe }}
+    </div>
+
+</body>
+
+</html>

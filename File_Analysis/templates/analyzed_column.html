@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Analyzed Column</title>
+    <!-- Include Plotly CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <h1>Analyzed Column</h1>
+    <!-- Display other analyzed column details -->
+
+    <div>
+        <p>File Path: {{ file_path }}</p>
+        <p>Column Name: {{ column_name }}</p>
+        <p>Total Rows: {{ total_rows }}</p>
+        <p>Total Nan Values: {{ total_nan_values }}</p>
+        <p>Nan Percentage: {{ nan_percentage }}</p>
+        <p>Mean: {{ mean }}</p>
+        <p>Median: {{ median }}</p>
+        <p>SD: {{ SD }}</p>
+    </div>
+
+    <!-- Display the histogram image
+    <img src="data:image/png;base64, {{ histogram_data }}" alt="Histogram of {{ column_name }}"> -->
+
+    <!-- Display the Plotly histogram -->
+    <div>
+        {{ histogram_data|safe }}
+    </div>
+
+
+    <form method="post" action="{% url 'impute_column' %}">
+        {% csrf_token %}
+        <label for="imputation_select">Select Imputation Algorithm:</label>
+        <select id="imputation_select" name="selected_algorithm">
+            {% for algorithm in imputation_functions %}
+            <option value="{{ algorithm }}">{{ algorithm }}</option>
+            {% endfor %}
+        </select>
+        <!-- Hidden inputs for file_path and column_name -->
+        <input type="hidden" name="file_path" value="{{ file_path }}">
+        <input type="hidden" name="column_name" value="{{ column_name }}">
+        <button type="submit">Impute Column</button>
+    </form>
+    <!-- Include other analyzed column details -->
+</body>
+
+</html>

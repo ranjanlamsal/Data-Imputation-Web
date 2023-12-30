@@ -1,0 +1,41 @@
+<!-- upload_success.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Success</title>
+</head>
+
+<body>
+    <h1>Upload Success</h1>
+    <p>File uploaded successfully: {{ file_path }}</p>
+    <p>Columns analyzed:</p>
+
+    <form id="analyzeForm" method="post" action="{% url 'analyze_column' %}">
+        {% csrf_token %}
+        <label for="column_select">Select Column:</label>
+        <select id="column_select" name="selected_column">
+            {% for column in column_list %}
+            <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
+        </select>
+        <!-- Hidden input to store the selected column -->
+        <input type="hidden" id="selected_column" name="selected_column">
+        <input type="hidden" name="file_path" value="{{ file_path }}">
+        <input type="hidden" name="i" value="1">
+        <button type="button" onclick="submitForm()">Analyze Data</button>
+    </form>
+
+    <script>
+        // Function to handle form submission
+        function submitForm() {
+            var selectedColumn = document.getElementById("column_select").value;
+            document.getElementById("selected_column").value = selectedColumn;
+            document.getElementById("analyzeForm").submit();
+        }
+    </script>
+</body>
+
+</html>
