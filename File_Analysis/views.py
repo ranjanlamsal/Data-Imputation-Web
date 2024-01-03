@@ -116,10 +116,12 @@ def impute_column_render(request):
     imputed_df = Impute_column(file, column_name, imputation_name)
 
     imputed_df.to_csv(download_file_path)
-    
-    analyzed_data = analysis.metaData(imputed_df, column_name)
+    original_df = pd.read_csv(os.path.join(settings.MEDIA_ROOT, 'INITIAL_FILES', file))
 
-    analyzed_data.update({'file_path':file,'data': analyzed_data, 'imputation_algorithm': imputation_name})
+    analyzed_data = analysis.metaData(imputed_df, column_name)
+    original_data = analysis.metaData(original_df, column_name)
+
+    analyzed_data.update({'file_path':file,'data': analyzed_data, 'original_data':original_data, 'imputation_algorithm': imputation_name})
     
     return render(request, 'imputed.html', analyzed_data)
 
