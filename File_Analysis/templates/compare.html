@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Compare Imputation Algorithms</title>
+</head>
+
+<body>
+
+    <h1>Compare Imputation Algorithms</h1>
+    <p>File: {{ file }}</p>
+    <p>Column: {{ column_name }}</p>
+
+    <!-- Display results for each algorithm -->
+    <div>
+        {% for result in results %}
+        <h3>Algorithm: {{ result.algorithm }}</h3>
+        <p>Total Rows: {{ result.data.total_rows }}</p>
+        <p>Total Nan Values: {{ result.data.total_nan_values }}</p>
+        <p>Nan Percentage: {{ result.data.nan_percentage }}</p>
+        <p>Mean: {{ result.data.mean }}</p>
+        <p>Median: {{ result.data.median }}</p>
+        <p>SD: {{ result.data.SD }}</p>
+        <hr>
+        <!-- Display the histogram using Plotly -->
+        <div>
+            {{ result.data.histogram_data|safe }}
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+
+</html>

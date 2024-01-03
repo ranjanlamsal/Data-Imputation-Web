@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      #pieChart {
+        position: relative;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+      }
+
+      .legend {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 400px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+      .hello {
+        display: flex;
+        gap: 10px;
+      }
+
+      .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 5px;
+      }
+    </style>
+    <title>Pie Chart</title>
+  </head>
+  <body>
+    <div class="hello">
+      <canvas id="pieChart" width="400" height="400"></canvas>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <script>
+      // Data for the pie chart (percentages)
+      const data = [35, 65];
+
+      // Colors for each segment
+      const colors = ["#ff6666", "#66ff66"];
+
+      const canvas = document.getElementById("pieChart");
+      const context = canvas.getContext("2d");
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = canvas.width / 2;
+
+      let startAngle = 0;
+      let endAngle = 0;
+
+      const legend = document.getElementById("legend");
+
+      for (let i = 0; i < data.length; i++) {
+        endAngle = startAngle + (data[i] / 100) * (Math.PI * 2);
+
+        // Draw the pie segment
+        context.beginPath();
+        context.moveTo(centerX, centerY);
+        context.arc(centerX, centerY, radius, startAngle, endAngle, false);
+        context.fillStyle = colors[i];
+        context.fill();
+
+        // Draw the percentage label at the center of the segment
+        const labelAngle = startAngle + (endAngle - startAngle) / 2;
+        const labelX = centerX + Math.cos(labelAngle) * radius * 0.8; // Adjust 0.8 for label positioning
+        const labelY = centerY + Math.sin(labelAngle) * radius * 0.8; // Adjust 0.8 for label positioning
+        context.fillStyle = "#000"; // Set label color
+        context.font = "12px Arial"; // Set label font
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(data[i] + "%", labelX, labelY);
+
+        // Add legend item
+        const legendItem = document.createElement("div");
+        legendItem.classList.add("legend-item");
+        legendItem.innerHTML = `
+          <div class="legend-color" style="background-color: ${
+            colors[i]
+          }"></div>
+          ${data[i]}% ${getColorLabel(colors[i])}
+        `;
+        legend.appendChild(legendItem);
+
+        startAngle = endAngle;
+      }
+
+      // Function to get color label
+      function getColorLabel(color) {
+        switch (color) {
+          case "#ff6666":
+            return "Nan";
+          case "#66ff66":
+            return "value";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from fancyimpute import IterativeImputer
+from fancyimpute import IterativeImputer, IterativeSVD, MatrixFactorization, SoftImpute
 
 
 def linear_interpolate_column(DataFrame, column_name):
@@ -18,21 +18,19 @@ def linear_interpolate_column(DataFrame, column_name):
     Returns:
         DataFrame: A copy of the input DataFrame with missing values in the specified column interpolated.
     """
-    if column_name not in DataFrame.columns:
-        raise ValueError(f"Column '{column_name}' not found in the DataFrame.")
-
+    
     # Create a copy of the DataFrame to avoid modifying the original data
     interpolated_data = DataFrame.copy()
 
     # Use the interpolate function to fill missing values in the specified column
     interpolated_data[column_name] = interpolated_data[column_name].interpolate(method='linear')
 
-    interpolated_data.fillna(interpolated_data.obtained_marks.mean(),inplace = True)
+    interpolated_data.fillna(interpolated_data[column_name].mean(),inplace = True)
 
     return interpolated_data
 
 
-def polynomial_interpolate_column(DataFrame, column_name):
+def polynomial_interpolate_column(request):
     """
     Interpolate missing values in a specified column of a DataFrame.
 
@@ -45,16 +43,18 @@ def polynomial_interpolate_column(DataFrame, column_name):
     Returns:
         DataFrame: A copy of the input DataFrame with missing values in the specified column interpolated.
     """
-    if column_name not in DataFrame.columns:
-        raise ValueError(f"Column '{column_name}' not found in the DataFrame.")
-
+    DataFrame = request.POST.get("DataFrame")
+    column_name = request.POST.get("column_name")
+    selected_algorithm = request.POST.get("selected_algorithm")
+    
     # Create a copy of the DataFrame to avoid modifying the original data
     interpolated_data = DataFrame.copy()
 
     # Use the interpolate function to fill missing values in the specified column
     interpolated_data[column_name] = interpolated_data[column_name].interpolate(method='polynomial')
 
-    interpolated_data.fillna(interpolated_data.obtained_marks.mean(),inplace = True)
+    #fillna in first and last data as interpolation doesnot impite those if needed
+    interpolated_data.fillna(interpolated_data[column_name].mean(),inplace = True)
 
     return interpolated_data
 
@@ -94,9 +94,60 @@ def iterative_imputer(df,x):
     return df
 
 def impute_mean(df, x):
-    df[x].fillna(df[x].mean())
+    df[x] = df[x].fillna(df[x].mean())
     return df
 
 def impute_median(df, x):
-    df[x].fillna(df[x].median())
+    df[x] = df[x].fillna(df[x].median())
     return df
+
+
+def iterative_svd_fill(df,x, max_iters=10):
+    # Convert the DataFrame to a NumPy array
+    array_data = df.values
+
+    # Use IterativeSVD to fill NaN values
+    imputer = IterativeSVD(max_iters=max_iters)
+    filled_data = imputer.fit_transform(array_data)
+
+    # Convert the filled data back to a DataFrame
+    filled_df = pd.DataFrame(filled_data, columns=[x])
+
+    return filled_df
+
+
+# Function to perform matrix factorization using fancyimpute
+def matrix_factorization_fill(df, column_name,rank=3, max_iters=100):
+    
+     # Creating a copy of the DataFrame to avoid modifying the original one
+    df_copy = df.copy()
+    
+    # Extracting the column to be imputed
+    column_data = df_copy[column_name].values
+    
+    # Creating a boolean mask of missing values in the column
+    missing_mask = np.isnan(column_data)
+    
+    # Using matrix factorization to fill missing values
+    imputer = MatrixFactorization(rank=rank, max_iters=max_iters)
+    
+    # Filling the missing values in the column
+    filled_column_data = imputer.fit_transform(column_data.reshape(-1, 1)).ravel()
+    
+    # Assigning the filled values back to the DataFrame
+    df_copy.loc[missing_mask, column_name] = filled_column_data[missing_mask]
+    
+    return df_copy
+
+def soft_fill(df,x):
+    # Convert the DataFrame to a NumPy array
+    array_data = df.values
+
+    # Use SoftImpute to fill NaN values
+    imputer = SoftImpute()
+    filled_data = imputer.fit_transform(array_data)
+
+    # Convert the filled data back to a DataFrame
+    filled_df = pd.DataFrame(filled_data, columns=df.columns)
+
+    return filled_df

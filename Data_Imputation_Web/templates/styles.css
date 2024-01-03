@@ -1,0 +1,192 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #E0E0E0;
+}
+
+nav ul {
+  background-color: #0B0000;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+
+}
+nav li{
+  float: left;
+}
+
+nav a {
+  display: block;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  padding: 24px 36px;
+  float: right;
+  
+}
+
+.file-upload-div{
+  background-color: #271313;
+  margin: 30px 80px;
+  height: 350px;
+  padding: 30px 100px;
+  border-radius: 20px;
+}
+.file-upload-div p{
+  color: white;
+}
+.file-upload-div form{
+  display: flex;
+  gap:200px
+}
+.file-upload-div button{
+  border-radius: 8px;
+  width: 200px;
+  border: none;
+  color: white;
+  background-color: #830404;
+}
+.file-upload-div button:hover{
+  background-color: #B10707;
+}
+
+.file-upload{
+  background-color: #A9A9A9;
+  padding: 15px;
+  width: 16%;
+  border-radius: 8px;
+}
+.Select-column{
+  margin-top: 30px;
+}
+
+.Select-column input{
+  margin-top: 30px;
+  padding: 10px;
+  width: 200px;
+  border: none;
+  border-radius: 8px;
+  background-color: #830404;
+  color: white;
+}
+.Select-column select{
+  padding: 20px;
+  display: block;
+  color: white;
+  background-color:#830404;
+  border-radius:  8px;
+  border: none;
+
+}
+.Statistics{
+  margin: 0px 80px ;
+}
+.Stats-flex{
+  display: flex;
+  gap: 200px;
+}
+
+.pi-chart{
+  background-color: white;
+  width: 500px;
+  height: 400px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#pieChart {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+}
+
+.histogram{
+  background-color: white;
+  width: 500px;
+  height: 400px;
+  border-radius: 20px;
+}
+.Data-info{
+  margin: 30px 80px;
+  height: 80px;
+  width: 300px;
+  padding: 20px 100px;
+  border-radius: 20px;
+  background-color: #271313;
+  color: white;
+  align-items: center;
+  display: grid;
+  gap: 10px;
+}
+
+.Sel-Imputation{
+  margin: 30px 80px;
+  height: 200px;
+  padding: 30px 100px;
+  border-radius: 20px;
+  background-color: #271313;
+  color: white;
+}
+
+.Sel-Imputation input{
+  width: 200px;
+
+}
+
+.Com-Imputation{
+  margin: 30px 80px;
+  height: 300px;
+  padding: 30px 100px;
+  border-radius: 20px;
+  background-color: #271313;
+  color: white;
+}
+.Compare{
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.Compare select{
+  padding: 20px;
+  display: block;
+  color: white;
+  background-color:#830404;
+  border-radius:  8px;
+  border: none;
+}
+.Com-Imputation input{
+  margin-top: 30px;
+  padding: 10px;
+  width: 200px;
+  border: none;
+  border-radius: 8px;
+  background-color: #830404;
+  color: white;
+}
+
+.SelectMainContainer{
+  display: flex;
+  gap: 20px;
+}
+
+.Download button{
+  margin: 10px 80px;
+  padding: 10px;
+  width: 180px;
+  border-radius: 8px;
+  background-color: #830404;
+  color: white;
+  border: none;
+}
+.Download button:hover{
+  background-color: #B10707;
+}
+.DataInfoMainContainer{
+  display: flex;
+  gap:50px;
+}

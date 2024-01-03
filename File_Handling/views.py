@@ -10,8 +10,6 @@ import string
 
 from requests import request
 
-def index(request):
-    return render(request,'index.html')
 
 def generate_random_string(length):
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))

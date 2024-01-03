@@ -1,3 +1,4 @@
+#Analysis.py
 import base64
 import io
 import os
@@ -5,6 +6,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
 from fancyimpute import IterativeImputer
 
 
@@ -39,32 +41,50 @@ def scaleto(df,x,y,k):
     
     return df
 
-def countnan(df,x):
-    #fuction to count total number of nan in the dataframe
-    return df[x].isna().sum()
+def metaData(df,x):
+
+    total_rows = len(df)
+    print(total_rows)
+    mean = df[x].mean()
+    print(mean)
+    total_nan_values = df[x].isna().sum()
+    print(total_nan_values)
+    nan_percentage = (total_nan_values / total_rows) * 100
+    print("metadata function 3")
+    
+    #data_type = type(df[x][1])
+    print("metadata function 4")
+    
+    median = df[x].median()
+
+    print("metadata function 5")
+    SD = df[x].std()
 
 
-def returnhist(df,column):
-    # Prepare histogram data
-    # Generate histogram plot of the selected column
-    plt.figure(figsize=(6, 4))
-    plt.hist(df[column], bins='auto', alpha=0.7, rwidth=0.85)  # Adjust the number of bins as needed
-    plt.title(f'Histogram of {column}')
-    plt.xlabel(column)
-    plt.ylabel('Frequency')
-    
-    # Save the histogram plot to a buffer
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    
-    # Convert the plot to base64 encoding
-    histogram_data = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    
-    # Close the plot to free memory
-    plt.close()
+    kurt = df[x].kurt()
+    skew = df[x].skew()
 
-    return histogram_data
+    # Create an interactive histogram using Plotly Express
+    fig = px.histogram(df, x=x, title=f'Histogram of {x}')
+    histogram_data = fig.to_html(full_html=False, default_height=500, default_width=700)
+
+    analyzed_data = {
+        'column_name': x,
+        'total_rows': total_rows,
+        'total_nan_values': total_nan_values,
+        'nan_percentage': nan_percentage,
+        'mean': mean,
+        'median': median,
+        'SD' : SD,
+        'histogram_data': histogram_data,
+        'skewness': skew,
+        'kurtesis' : kurt,
+        # 'histogram_data': analysis.returnhist(df, selected_column),
+        
+    }
+    print(analyzed_data)
+    return analyzed_data
+
 
 def dropOutliers(df,y):
     #drop if full marks is nan

@@ -10,23 +10,21 @@
 
     <h1>Imputation Success</h1>
     <p>File Imputed successfully: {{ file_path }}</p>
-    <p>Column Imputed: {{ selected_column }}</p>
+    <div>
+        <p>Imputation Algorithm: {{ imputation_algorithm }}</p>
+        <p>Column Name: {{ data.column_name }}</p>
+        <p>Total Rows: {{ data.total_rows }}</p>
+        <p>Total Nan Values: {{ data.total_nan_values }}</p>
+        <p>Nan Percentage: {{ data.nan_percentage }}</p>
+        <p>Mean: {{ data.mean }}</p>
+        <p>Median: {{ data.median }}</p>
+        <p>SD: {{ data.SD }}</p>
+    </div>
 
-    <!-- JavaScript function to submit the form -->
-    <script>
-        function submitForm() {
-            document.getElementById('analyze_column').submit();
-        }
-    </script>
-
-    <!-- Button to analyze imputed data -->
-    <form id="analyze_column" method="post" action="{% url 'analyze_column' %}">
-        {% csrf_token %}
-        <!-- Hidden input to store the selected column -->
-        <input type="hidden" name="selected_column" value="{{ selected_column }}">
-        <input type="hidden" name="file_path" value="{{ file_path }}">
-        <button type="button" onclick="submitForm()">Analyze Data</button>
-    </form>
+    <!-- Display the histogram using Plotly -->
+    <div>
+        {{ data.histogram_data|safe }}
+    </div>
 
 </body>
 

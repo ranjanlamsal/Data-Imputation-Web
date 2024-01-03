@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Imputation Result</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="mainpage.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li style="font-size: 20px">
+          <a href="Homepage.html">Data Imputation Tools and Techniques</a>
+        </li>
+        <li style="float: right"><a href="#">Imputation Algorithm</a></li>
+        <li style="float: right">
+          <a href="Compare.html">Compare Algorithm</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="main-text">
+        <div class="main-heading">Data Imputation Tools and Techniques</div>
+        <div class="one-liner" id="one-liner"></div>
+        <div class="homepagebutton">
+          <button onclick="scrollToDiv()">
+            <a href="#file-upload-div">Start Imputation</a>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dots will be appended here -->
+    </div>
+    <div id="targetDiv" class="file-upload-div">
+      <p>Upload your file here</p>
+      <!-- file upload section -->
+      <form action="upload.php" method="post" enctype="multipart/form-data">
+        <div class="file-upload">
+          <input type="file" id="file" name="file" />
+        </div>
+        <button onclick="">Upload</button>
+      </form>
+
+      <!-- select the column for imputation -->
+      <form>
+        <div class="Select-column">
+          <select id="column" name="column" onclick="showOptions()">
+            <option value="" disabled selected>
+              Select the column for imputation
+            </option>
+            <option value="1st">1st</option>
+            <option value="2nd">2nd</option>
+            <option value="3rd">3rd</option>
+            <option value="4th">4th</option>
+            <option value="5th">5th</option>
+            <option value="2nd">2nd</option>
+            <option value="3rd">3rd</option>
+            <option value="4th">4th</option>
+            <option value="5th">5th</option>
+          </select>
+
+          <input type="submit" value="See Info" />
+        </div>
+      </form>
+    </div>
+
+    <div id="targetDivStats" class="Statistics">
+      <h3>Data Statistics</h3>
+      <div class="Stats-flex">
+        <div class="pi-chart">
+          <canvas id="pieChart" width="200" height="200"></canvas>
+        </div>
+
+        <div class="histogram"></div>
+      </div>
+    </div>
+
+    <div class="DataInfoMainContainer">
+      <div class="Data-info">
+        <li>Mean: XXX</li>
+
+        <li>Median: XXX</li>
+
+        <li>Standard Deviation: XXX</li>
+      </div>
+      <div class="Data-info">
+        <li>Mean: XXX</li>
+
+        <li>Median: XXX</li>
+
+        <li>Standard Deviation: XXX</li>
+      </div>
+    </div>
+
+    <div class="Sel-Imputation">
+      <h3>Select the Imputation Algorithm</h3>
+      <div class="Select-column">
+        <div class="SelectMainContainer">
+          <select id="column" name="column" onclick="showOptions()">
+            <option value="" disabled selected>Select Imputation Method</option>
+            <option value="1st">1st</option>
+            <option value="2nd">2nd</option>
+            <option value="3rd">3rd</option>
+            <option value="4th">4th</option>
+            <option value="5th">5th</option>
+            <option value="2nd">2nd</option>
+            <option value="3rd">3rd</option>
+            <option value="4th">4th</option>
+            <option value="5th">5th</option>
+          </select>
+
+          <select id="column" name="column" onclick="showOptions()">
+            <option value="" disabled selected>
+              Select the Reference Column
+            </option>
+            <option value="1st">1st</option>
+            <option value="2nd">2nd</option>
+            <option value="3rd">3rd</option>
+            <option value="4th">4th</option>
+            <option value="5th">5th</option>
+            <option value="2nd">2nd</option>
+            <option value="3rd">3rd</option>
+            <option value="4th">4th</option>
+            <option value="5th">5th</option>
+          </select>
+        </div>
+
+        <input type="submit" value="Impute" />
+      </div>
+    </div>
+    <div id="traget-div" class="Statistics">
+      <h3>Mean</h3>
+      <div class="Stats-flex">
+        <div class="pi-chart">
+          <canvas id="pieChart" width="200" height="200"></canvas>
+        </div>
+        <div class="histogram"></div>
+      </div>
+    </div>
+
+    <div class="DataInfoMainContainer">
+      <div class="Data-info">
+        <li>Mean: XXX</li>
+
+        <li>Median: XXX</li>
+
+        <li>Standard Deviation: XXX</li>
+      </div>
+      <div class="Data-info">
+        <li>Mean: XXX</li>
+
+        <li>Median: XXX</li>
+
+        <li>Standard Deviation: XXX</li>
+      </div>
+    </div>
+    <div class="Download"><button>Download</button></div>
+
+    <script>
+      // Data for the pie chart (percentages)
+      const data = [55, 45];
+
+      // Colors for each segment
+      const colors = ["#ED551A", "#0171EB", "#6666ff"];
+
+      const canvas = document.getElementById("pieChart");
+      const context = canvas.getContext("2d");
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = canvas.width / 2;
+
+      let startAngle = 0;
+      let endAngle = 0;
+
+      for (let i = 0; i < data.length; i++) {
+        endAngle = startAngle + (data[i] / 100) * (Math.PI * 2);
+
+        // Draw the pie segment
+        context.beginPath();
+        context.moveTo(centerX, centerY);
+        context.arc(centerX, centerY, radius, startAngle, endAngle, false);
+        context.fillStyle = colors[i];
+        context.fill();
+
+        // Draw the percentage label at the center of the segment
+        const labelAngle = startAngle + (endAngle - startAngle) / 2;
+        const labelX = centerX + Math.cos(labelAngle) * radius * 0.6; // Adjust 0.6 for label positioning
+        const labelY = centerY + Math.sin(labelAngle) * radius * 0.6; // Adjust 0.6 for label positioning
+        context.fillStyle = "#fff"; // Set label color
+        context.font = "12px senserif"; // Set label font
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(data[i] + "%", labelX, labelY);
+
+        startAngle = endAngle;
+      }
+    </script>
+  </body>
+</html>

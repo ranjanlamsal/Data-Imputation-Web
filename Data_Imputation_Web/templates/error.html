@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Error Message</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+      .Hello {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        position: relative;
+        justify-content: center;
+      }
+      .error-container {
+        text-align: center;
+        max-width: 400px;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .error-icon {
+        font-size: 48px;
+        color: #e74c3c;
+      }
+
+      .error-message {
+        margin-top: 10px;
+        font-size: 18px;
+        color: #333;
+      }
+
+      .error-action {
+        margin-top: 20px;
+      }
+
+      .error-action a {
+        text-decoration: none;
+        color: #3498db;
+        font-weight: bold;
+      }
+
+      .error-action a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li style="font-size: 20px">
+          <a href="Homepage.html">Data Imputation Tools and Techniques</a>
+        </li>
+        <li style="float: right">
+          <a href="Compare.html">Compare Algorithm</a>
+        </li>
+        <li style="float: right"><a href="#">Imputation Algorithm</a></li>
+      </ul>
+    </nav>
+    <div class="Hello">
+      <div class="error-container">
+        <div class="error-icon">&#9888;</div>
+        <div class="error-message">Oops! Something went wrong.</div>
+        <div class="error-action">
+          <p>
+            Do You Want to Go back.<a href="Data-stats.html">Go to DashBoard</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

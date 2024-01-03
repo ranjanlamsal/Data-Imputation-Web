@@ -46,6 +46,23 @@
         <button type="submit">Impute Column</button>
     </form>
     <!-- Include other analyzed column details -->
+
+    <span></span>
+    <form method="post" action="{% url 'compare_algorithms_impute' %}">
+        {% csrf_token %}
+        <label for="compare_select">Select Algorithms to Compare:</label>
+        <select id="compare_select" name="selected_algorithms" multiple>
+            {% for algorithm in imputation_functions %}
+            <option value="{{ algorithm }}">{{ algorithm }}</option>
+            {% endfor %}
+        </select>
+        <!-- Hidden inputs for file_path and column_name -->
+        <input type="hidden" name="file_path" value="{{ file_path }}">
+        <input type="hidden" name="column_name" value="{{ column_name }}">
+        <button type="submit">Compare Algorithms</button>
+    </form>
+
+
 </body>
 
 </html>

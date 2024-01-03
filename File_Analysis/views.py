@@ -11,15 +11,22 @@ import io
 import base64
 from Data_Imputation_Web import settings
 
-imputation_functions = [
-        'mean',
-        'median',
-        'iterative_imputer',
-        'linear_interpolate_column'
-    ]
+imputation_functions = {
+        'Mean',
+        'Median',
+        'Iterative_Imputer',
+        'Linear_Interpolate',
+        # 'Iterative_SVD',
+        # 'Matrix_Factorization',
+        # 'Soft_Imputer'  
+        }
 
+def analyze_column(df, column):
+    if analysis.isImputable(df,column):
+        analyzed_data = analysis.metaData(df, column)
+    return analyzed_data
 
-def analyze_column(request):
+def analyze_column_render(request):
     if request.method == 'POST':
         file_path_initial = request.POST.get('file_path')
         selected_column = request.POST.get('selected_column')
@@ -32,109 +39,54 @@ def analyze_column(request):
 
     if i == 1:
         file_path = os.path.join(settings.MEDIA_ROOT, 'INITIAL_FILES', file_path_initial)
-
         df = pd.read_csv(file_path)
 
-        if analysis.isImputable(df,selected_column):
-            total_rows = len(df)
-            total_nan_values = df[selected_column].isnull().sum()
-            nan_percentage = (total_nan_values / total_rows) * 100
-            data_type = type(df[selected_column][1])
-
-            mean = df[selected_column].mean()
-            median = df[selected_column].median()
-        
-
-            SD = df[selected_column].std()
-
-            # Create an interactive histogram using Plotly Express
-            fig = px.histogram(df, x=selected_column, title=f'Histogram of {selected_column}')
-            histogram_data = fig.to_html(full_html=False, default_height=500, default_width=700)
-
-            analyzed_data = {
-                'file_path' : file_path_initial,
-                'column_name': selected_column,
-                'total_rows': total_rows,
-                'total_nan_values': total_nan_values,
-                'nan_percentage': nan_percentage,
-                'mean': mean,
-                'median': median,
-                'SD' : SD,
-                'histogram_data': histogram_data,
-                'imputation_functions': imputation_functions
-                # 'histogram_data': analysis.returnhist(df, selected_column),
+        try:
+            analyzed_data = analyze_column(df, selected_column)
+            analyzed_data.update({'file_path':file_path_initial, 'imputation_functions': imputation_functions}) # update the dictionary
                 
-            }
-            
             return render(request, 'analyzed_column.html', analyzed_data)
         
-        else:
-            return render(request, 'error.html', {'error': 'Column Type Error'})
+        except Exception as e:
+            return render(request, 'error.html', {"error": str(e)})
     else : 
         file_path = os.path.join(settings.MEDIA_ROOT, 'FINAL_FILES', file_path_initial)
         df = pd.read_csv(file_path)
 
-        if analysis.isImputable(df,selected_column):
-            total_rows = len(df)
-            total_nan_values = df[selected_column].isnull().sum()
-            nan_percentage = (total_nan_values / total_rows) * 100
-            data_type = type(df[selected_column][1])
-
-            mean = df[selected_column].mean()
-            median = df[selected_column].median()
-        
-
-            SD = df[selected_column].std()
-
-            # Create an interactive histogram using Plotly Express
-            fig = px.histogram(df, x=selected_column, title=f'Histogram of {selected_column}')
-            histogram_data = fig.to_html(full_html=False, default_height=500, default_width=700)
-
-            analyzed_data = {
-                'file_path' : file_path_initial,
-                'selected_column': selected_column,
-                'total_rows': total_rows,
-                'total_nan_values': total_nan_values,
-                'nan_percentage': nan_percentage,
-                'mean': mean,
-                'median': median,
-                'SD' : SD,
-                'histogram_data': histogram_data,
-                'imputation_functions': imputation_functions
-                # 'histogram_data': analysis.returnhist(df, selected_column),
+        try:
+            analyzed_data = analyze_column(df, selected_column)
+            analyzed_data.update({'file_path':file_path_initial, 'imputation_functions': imputation_functions}) # update the dictionary
                 
-            }
-            
-            return render(request, 'post_analysis.html', analyzed_data)
+            return render(request, 'analyzed_column.html', analyzed_data)
         
-        else:
-            return render(request, 'error.html', {'error': 'Column Type Error'})
+        except Exception as e:
+            return render(request, 'error.html', {"error": str(e)})
     
 
-def impute_column(request):
-    if request.method == 'POST':
-        file = request.POST.get('file_path')
-        column_name = request.POST.get('column_name')
-        imputation_name = request.POST.get('selected_algorithm')  # Capture selected imputation algorithm
-
+def Impute_column(file, column_name, imputation_name):
     file_path = os.path.join(settings.MEDIA_ROOT, 'INITIAL_FILES', file)
-    download_file_path = os.path.join(settings.MEDIA_ROOT, 'FINAL_FILES', file)
 
-    imputation_functions = {
-        'mean': algorithms.impute_mean,
-        'median': algorithms.impute_median,
-        'iterative_imputer' : algorithms.iterative_imputer,
-        'linear_interpolate_column' : algorithms.linear_interpolate_column
-    }
     if analysis.FileExist(file_path) == False:
         return render(request, 'error.html', {'error': 'file doesnot exists'})
 
     df = pd.read_csv(file_path)
+    df_copy = df.copy()
 
+    imputation_functions = {
+        'Mean': algorithms.impute_mean,
+        'Median': algorithms.impute_median,
+        'Iterative_Imputer' : algorithms.iterative_imputer,
+        'Linear_Interpolate' : algorithms.linear_interpolate_column,
+        # 'Iterative_SVD': algorithms.iterative_svd_fill,
+        # 'Matrix_Factorization': algorithms.matrix_factorization_fill,
+        # 'Soft_Imputer': algorithms.soft_fill,
+    }
+    print("Imputation Name")
+    print(imputation_name)
     if imputation_name not in imputation_functions.keys():
-        return render(request, 'error.html', {'error': 'select valid imputation algorithm'})
+        return {'error':'Imputation Algorithm not found'}
     
-    if column_name not in analysis.num_column(df):
+    if column_name not in analysis.num_column(df_copy):
         return render(request, 'error.html', {'error': 'invalid column'})
 
     # Call the corresponding imputation function based on the received name
@@ -144,10 +96,68 @@ def impute_column(request):
         # df = analysis.scaleto(df)
         selected_function = imputation_functions[imputation_name]
 
-        df = selected_function(df, column_name)
-
-        df.to_csv(download_file_path)
+        df_result = selected_function(df_copy, column_name)
         
-        return render(request, 'imputed.html',{'file_path': file,'selected_column':column_name})
+        return df_result
     except Exception as e:
         return render(request, 'error.html', {'error': f'Error performing imputation: {str(e)}'}, status=500)
+
+
+
+def impute_column_render(request):
+    if request.method == 'POST':
+        file = request.POST.get('file_path')
+        column_name = request.POST.get('column_name')
+        imputation_name = request.POST.get('selected_algorithm')  # Capture selected imputation algorithm
+
+    download_file_path = os.path.join(settings.MEDIA_ROOT, 'FINAL_FILES', file)
+    
+    # try:
+    imputed_df = Impute_column(file, column_name, imputation_name)
+
+    imputed_df.to_csv(download_file_path)
+    
+    analyzed_data = analysis.metaData(imputed_df, column_name)
+
+    analyzed_data.update({'file_path':file,'data': analyzed_data, 'imputation_algorithm': imputation_name})
+    
+    return render(request, 'imputed.html', analyzed_data)
+
+    # except Exception as e:
+    #     return render(request, 'errorr.html', {'error': f'Error performing imputation render: {str(e)}'})
+
+
+def compare_algorithms_impute(request):
+    '''
+    A function to imputed a single dataframe with multiple algorithms
+    '''
+    if request.method == 'POST':
+        file = request.POST.get('file_path')
+        column_name = request.POST.get('column_name')
+        algorithms = request.POST.getlist('selected_algorithms')  # Capture selected imputation algorithm
+
+    download_file_path = os.path.join(settings.MEDIA_ROOT, 'FINAL_FILES', file)
+    results = []
+    i = 0
+    
+    print(algorithms)
+    for algo in algorithms:
+        print(algo)
+        imputed_df = Impute_column(file, column_name, str(algo))
+        print(imputed_df.head())
+        imputed_df.to_csv(download_file_path)
+        
+        result = analysis.metaData(imputed_df, column_name)
+        results.append({'algorithm': algo, 'data': result})
+        i = i+1
+    
+        # except Exception as e:
+        #     return render(request, 'error.html', {'error': f'Error performing comparative imputation: {str(e)}'}, status=500)
+    # print(results)
+    context = {
+            'file': file,
+            'column_name': column_name,
+            'results': results,
+        }
+
+    return render(request, 'compare.html', context)
